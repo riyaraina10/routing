@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 const MealDetails = () => {
     const [meal, setMeal] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { id } = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchMealDetails = async () => {
             try {
                 const response = await fetch(
-                    `https://www.themealdb.com/api/json/v1/1/lookup.php?i=53033`
+                    `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
                 );
                 const data = await response.json();
                 setMeal(data.meals[0]);
@@ -20,12 +25,11 @@ const MealDetails = () => {
         };
 
         fetchMealDetails();
-    });
+    }, [id]);
 
     if (loading) return <div className="loading">Loading meal details...</div>;
     if (!meal) return <div>Meal not found</div>;
 
-    // Extract ingredients and measures
     const ingredients = [];
     for (let i = 1; i <= 20; i++) {
         if (meal[`strIngredient${i}`]) {
@@ -71,6 +75,22 @@ const MealDetails = () => {
                         <p>{meal.strInstructions}</p>
                     </div>
                 </div>
+            </div>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+                <button
+                    onClick={() => navigate("/")}
+                    style={{
+                        marginTop: "20px",
+                        padding: "10px 20px",
+                        border: "none",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                        textAlign: "center",
+                        justifyitem: "center",
+                    }}
+                >
+                    Return to Home
+                </button>
             </div>
         </div>
     );
